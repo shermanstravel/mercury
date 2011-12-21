@@ -8,6 +8,9 @@ class @Mercury.Regions.Snippetable extends Mercury.Region
 
 
   build: ->
+    if @element.attr('data-default') != "" && @element.html() == ""
+      @element.html @element.attr('data-default')
+      
     @element.css({minHeight: 20}) if @element.css('minHeight') == '0px'
 
 
@@ -105,9 +108,9 @@ class @Mercury.Regions.Snippetable extends Mercury.Region
     insertSnippet: (options) ->
       snippet = options.value
       if (existing = @element.find("[data-snippet=#{snippet.identity}]")).length
-        existing.replaceWith(snippet.getHTML(@document, => @pushHistory()))
+        existing.replaceWith snippet.getHTML(@document, => @pushHistory())
       else
-        @element.append(snippet.getHTML(@document, => @pushHistory()))
+        @element.html snippet.getHTML(@document, => @pushHistory())
 
     editSnippet: ->
       return unless @snippet
