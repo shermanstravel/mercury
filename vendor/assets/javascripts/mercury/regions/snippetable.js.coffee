@@ -68,8 +68,14 @@ class @Mercury.Regions.Snippetable extends Mercury.Region
 
   togglePreview: ->
     if @previewing
+      if @element.attr('data-default') != "" && @element.html() == ""
+        @element.html @element.attr('data-default')
+      
       @makeSortable()
     else
+      if @element.attr('data-default') != "" && @element.html() != "" && @element.html() == @element.attr('data-default')
+        @element.html ''
+    
       @element.sortable('destroy')
       @element.removeClass('focus')
     super
