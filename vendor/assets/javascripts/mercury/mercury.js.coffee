@@ -34,11 +34,7 @@
 #
 @Mercury ||= {}
 jQuery.extend @Mercury,
-  version: '0.2.3'
-
-  # No IE support yet because it doesn't follow the W3C standards for HTML5 contentEditable (aka designMode).
-  # todo: move these into the specific region types -- some would be supported, just not the primary ones?
-  supported: document.getElementById && document.designMode && !jQuery.browser.konqueror && !jQuery.browser.msie
+  version: '0.3.0'
 
   # Mercury object namespaces
   Regions: Mercury.Regions || {}
@@ -56,17 +52,12 @@ jQuery.extend @Mercury,
 
   # Custom event methods
   on: (eventName, callback) ->
-    jQuery(top).on("mercury:#{eventName}", callback)
+    jQuery(window).on("mercury:#{eventName}", callback)
 
 
   trigger: (eventName, options) ->
     Mercury.log(eventName, options)
-    jQuery(top).trigger("mercury:#{eventName}", options)
-
-
-  bind: (eventName, callback) -> # todo: deprecated -- use 'on' instead
-    Mercury.deprecated('Mercury.bind is deprecated, use Mercury.on instead')
-    Mercury.on(eventName, callback)
+    jQuery(window).trigger("mercury:#{eventName}", options)
 
 
   # Alerting and logging methods

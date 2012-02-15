@@ -19,9 +19,16 @@ credit for your contributions.
 Some [examples are here](https://github.com/jejacks0n/mercury/tree/master/vendor/assets/javascripts/mercury/locales),
 and there's more on the [wiki page](https://github.com/jejacks0n/mercury/wiki/Localization-&-Translations).
 
-- French (provided by [adamantx](https://github.com/adamantx))
-- Spanish (provided by [javiercr](https://github.com/javiercr))
-
+Translations and contributors:
+- French ([adamantx](https://github.com/adamantx))
+- Spanish ([javiercr](https://github.com/javiercr))
+- Portuguese ([yakko](https://github.com/yakko))
+- Dutch ([kieranklaassen](https://github.com/kieranklaassen))
+- Italian ([gcastagneti](https://github.com/gcastagnet))
+- German ([poke](https://github.com/poke))
+- Danish ([martinjlowm](https://github.com/martinjlowm))
+- Swedish ([stefanm](https://github.com/stefanm))
+- Korean ([dorajistyle](https://github.com/dorajistyle))
 
 ## Awesomeness
 
@@ -98,16 +105,23 @@ Include the gem in your Gemfile and bundle to install the gem.
 
     gem 'mercury-rails'
 
-Make sure you get the migrations that you'll need.
-
-    rake mercury_engine:install:migrations
-    rake db:migrate
-
 You can also get the configuration file, css, and routes by running the generator.
 
     rails generate mercury:install
 
-This generator puts the mercury base file (configuration) into your project in /app/assets/javascripts/mercury.js.
+This generator puts the mercury base file (configuration) into your project in /app/assets/javascripts/mercury.js,
+and includes the base mercury routes.  It can optionally install the layout and a css overrides file, models, as well as
+an authentication helper that allows you to restrict access to editing.  Check the options by using `--help`.
+
+For Mongoid + MongoDB, you can use the `--orm=mongoid` option on the generator to get the required models added to your
+app.  Make sure to add `gem "mongoid-paperclip", :require => "mongoid_paperclip` to your Gemfile as well.  Thanks to
+[chandresh](https://github.com/chandresh) for this tip.
+
+If you're using ActiveRecord, make sure you get the migrations that you'll need for image uploading (if not you can
+disable the feature in mercury.js if you don't want it).
+
+    rake mercury_engine:install:migrations
+    rake db:migrate
 
 
 ## Usage
@@ -121,13 +135,7 @@ trigger the initialize:frame event from within your normal application layouts. 
 to be interacted with (eg. dom:loaded, document.ready), or at the bottom of your body tag.  It's recommended that you do
 this because it gives you some load performance improvements, but it's not required.
 
-    jQuery(top).trigger('initialize:frame');
-
-Or if you're not using jQuery:
-
-    if (top.Mercury) {
-      top.Mercury.trigger('initialize:frame');
-    }
+    jQuery(parent).trigger('initialize:frame');
 
 Mercury has an expectation that content regions will be on the page (not required, but probably useful).  To define
 content regions that Mercury will make editable you need to add a `mercury-region` class attribute to an element (this
@@ -139,6 +147,8 @@ include one.  Region types are outlined below.
       default content
     </div>
 
+For more advanced ways to integrate Mercury Editor with your Rails application check out this
+[wiki article](https://github.com/jejacks0n/mercury/wiki/Rails-Integration-Techniques).
 
 ### Using Mercury without Rails
 
@@ -174,7 +184,7 @@ that when it's ready.
 
 #### jQuery
 
-    jQuery(window).bind('mercury:ready', function() { Mercury.saveUrl = '/content'; });
+    jQuery(window).on('mercury:ready', function() { Mercury.saveUrl = '/content'; });
 
 #### Prototype
 
@@ -182,8 +192,8 @@ that when it's ready.
 
 #### Mercury
 
-    if (top.Mercury) {
-      top.Mercury.on('ready', function() { Mercury.saveUrl = '/content'; });
+    if (parent.Mercury) {
+      parent.Mercury.on('ready', function() { Mercury.saveUrl = '/content'; });
     }
 
 #### Function Declaration
@@ -201,7 +211,7 @@ edited or removed.
 Mercury does very little to save content and snippets for you, but it does provide the ability to load snippets from
 your own storage implementation.  Here's an example of loading existing snippet options back into Mercury.
 
-    jQuery(window).bind('mercury:ready', function() {
+    jQuery(window).on('mercury:ready', function() {
       Mercury.Snippet.load({
         snippet_1: {name: 'example', options: {'options[favorite_beer]': "Bells Hopslam", 'options[first_name]': "Jeremy"}}
       });
@@ -253,7 +263,7 @@ setting Mercury.saveURL, or passing it into the Mercury.PageEditor constructor..
 you're using loading mercury (via the loader, or by using the route method).  In both situations setting Mercury.saveURL
 is the most consistent.
 
-    jQuery(window).bind('mercury:ready', function() {
+    jQuery(window).on('mercury:ready', function() {
       Mercury.saveURL = '/contents';
     });
 
@@ -267,6 +277,14 @@ expressions to do this, which is probably faster, but maybe not as safe.
 
 I'm interested in what solutions people are looking for and end up using for this, so feel free to shoot me a line if
 you write something (eg. a middleware layer, an nginx module, or just something simple to get the job done).
+
+
+## Adding Authentication
+
+When you install Mercury using the generator (`rails g mercury:install`) you can optionally install an authentication
+file into your application (at `lib/mercury/authentication.rb`).  This is a simple method for restricting the actions in
+the MercuryController to only users who have the required privileges.  Since this can vary largely from application to
+application, it's a basic approach that lets you write in what you want.
 
 
 ## Project Details

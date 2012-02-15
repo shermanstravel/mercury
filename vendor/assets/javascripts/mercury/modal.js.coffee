@@ -9,6 +9,8 @@ jQuery.extend Mercury.modal,
     Mercury.trigger('focus:window')
     @initialize()
     if @visible then @update() else @appear()
+    if @options.content
+      setTimeout 500, => @loadContent(@options.content)
 
 
   initialize: ->
@@ -174,6 +176,8 @@ jQuery.extend Mercury.modal,
 
   setTitle: ->
     @titleElement.find('span').html(Mercury.I18n(@options.title))
+    closeButton = @titleElement.find('a')
+    if @options.closeButton == false then closeButton.hide() else closeButton.show()
 
 
   reset: ->

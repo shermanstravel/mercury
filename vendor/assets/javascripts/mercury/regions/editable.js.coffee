@@ -1,4 +1,8 @@
 class @Mercury.Regions.Editable extends Mercury.Region
+  # No IE support yet because it doesn't follow the W3C standards for HTML5 contentEditable (aka designMode).
+  @supported: document.designMode && !jQuery.browser.konqueror && !jQuery.browser.msie
+  @supportedText: "Chrome 10+, Firefox 4+, Safari 5+"
+
   type = 'editable'
 
   constructor: (@element, @window, @options = {}) ->
@@ -120,7 +124,7 @@ class @Mercury.Regions.Editable extends Mercury.Region
       Mercury.tooltip.hide()
 
     @element.on 'click', (event) =>
-      jQuery(event.target).closest('a').attr('target', '_top') if @previewing
+      jQuery(event.target).closest('a').attr('target', '_parent') if @previewing
 
     @element.on 'dblclick', (event) =>
       return if @previewing
@@ -282,7 +286,7 @@ class @Mercury.Regions.Editable extends Mercury.Region
         @document.execCommand(action, false, options.value)
       catch error
         # mozilla: indenting when there's no br tag handles strangely
-        # todo: mozilla: trying to justify the first line of any contentEditable fails
+        # mozilla: trying to justify the first line of any contentEditable fails
         @element.prev().remove() if action == 'indent' && @element.prev() != sibling
 
     # handle any broken images by replacing the source with an alert image
@@ -360,7 +364,7 @@ class @Mercury.Regions.Editable extends Mercury.Region
 
   sanitize: (sanitizer) ->
     # always remove nested regions
-    sanitizer.find(".#{Mercury.config.regionClass}").remove()
+    sanitizer.find(".#{Mercury.config.regions.className}").remove()
 
     if Mercury.config.pasting.sanitize
       switch Mercury.config.pasting.sanitize

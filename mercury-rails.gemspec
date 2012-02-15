@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   # General Gem Information
   s.name        = 'mercury-rails'
   s.date        = '2011-11-15'
-  s.version     = '0.2.3'
+  s.version     = '0.3.1'
   s.authors     = ['Jeremy Jackson']
   s.email       = ['jejacks0n@gmail.com']
   s.homepage    = 'http://github.com/jejacks0n/mercury'
@@ -26,7 +26,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency('uglifier')
   s.add_development_dependency('jquery-rails')
   s.add_development_dependency('sqlite3')
-  s.add_development_dependency('thin')
   s.add_development_dependency('ruby-debug19')
   s.add_development_dependency('evergreen')
   s.add_development_dependency('selenium-webdriver')

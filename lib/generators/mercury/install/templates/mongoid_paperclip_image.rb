@@ -1,8 +1,10 @@
-class Mercury::Image < ActiveRecord::Base
+class Mercury::Image
+  include Mongoid::Document
+  include Mongoid::Paperclip
 
-  self.table_name = :mercury_images
+  has_mongoid_attached_file :image
 
-  has_attached_file :image, :styles => { :medium => "300x300>", :thumb => "100x100>" }
+  validates_presence_of :image
 
   delegate :url, :to => :image
 
@@ -12,5 +14,4 @@ class Mercury::Image < ActiveRecord::Base
     options[:methods] << :url
     super(options)
   end
-
 end
