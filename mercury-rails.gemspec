@@ -16,31 +16,36 @@ Gem::Specification.new do |s|
 
 
   # Runtime Dependencies
-  s.add_runtime_dependency('rails', [">= 3.1.0"])
-  s.add_runtime_dependency('paperclip')
+  s.add_runtime_dependency('rails', '>= 3.1.0')
+  s.add_runtime_dependency('paperclip', '>= 2.5.2')
   s.add_runtime_dependency('coffee-script')
 
 
   # Development Dependencies
+  s.add_development_dependency('sprockets', '~> 2.1')
   s.add_development_dependency('rocco')
   s.add_development_dependency('uglifier')
   s.add_development_dependency('jquery-rails')
   s.add_development_dependency('sqlite3')
   s.add_development_dependency('ruby-debug19')
-  s.add_development_dependency('evergreen')
-  s.add_development_dependency('selenium-webdriver')
-  s.add_development_dependency('cucumber-rails')
-  s.add_development_dependency('fuubar-cucumber')
+  s.add_development_dependency('sprockets-helpers')
+
+  s.add_development_dependency('rspec-core', '>= 2.8.0')
+  s.add_development_dependency('evergreen', '>= 1.0.0')
+  s.add_development_dependency('selenium-webdriver', '>= 2.20.0')
+  s.add_development_dependency('cucumber-rails', '>= 1.3.0')
   s.add_development_dependency('capybara')
-  s.add_development_dependency('capybara-firebug')
+  s.add_development_dependency('capybara-firebug', '>= 1.1.0')
   s.add_development_dependency('database_cleaner')
 
 
   # Gem Files
-  s.extra_rdoc_files  = ["LICENSE"]
+  s.extra_rdoc_files  = ["LICENSE", "POST_INSTALL"]
+  # = MANIFEST =
   s.files             = Dir['lib/**/*', 'vendor/assets/**/*', 'app/**/*', 'db/migrate/*', 'config/engine.rb']
   s.test_files        = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables       = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
+  # = MANIFEST =
   s.require_paths     = ["lib"]
 
 end

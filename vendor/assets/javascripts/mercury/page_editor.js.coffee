@@ -9,6 +9,7 @@ class @Mercury.PageEditor
     throw Mercury.I18n('Mercury.PageEditor can only be instantiated once.') if window.mercuryInstance
 
     @options.visible = true unless (@options.visible == false || @options.visible == 'no')
+    @options.saveDataType = 'json' unless (@options.saveDataType == false || @options.saveDataType)
     @visible = @options.visible
 
     window.mercuryInstance = @
@@ -75,7 +76,11 @@ class @Mercury.PageEditor
     if region.data('region')
       region = region.data('region')
     else
-      type = (region.data('type') || 'unknown').titleize()
+      type = (
+        region.data('type') ||
+        ( jQuery.type(Mercury.config.regions.determineType) == 'function' && Mercury.config.regions.determineType(region) ) ||
+        'unknown'
+      ).titleize()
       throw Mercury.I18n('Region type is malformed, no data-type provided, or "%s" is unknown for the "%s" region.', type, region.attr('id') || 'unknown') if type == 'Unknown' || !Mercury.Regions[type]
       if !Mercury.Regions[type].supported
         Mercury.notify('Mercury.Regions.%s is unsupported in this client. Supported browsers are %s.', type, Mercury.Regions[type].supportedText)
@@ -194,7 +199,7 @@ class @Mercury.PageEditor
 
 
   save: (callback) ->
-    url = @saveUrl ? Mercury.saveURL ? @iframeSrc()
+    url = @saveUrl ? Mercury.saveUrl ? @iframeSrc()
     data = @serialize()
     Mercury.log('saving', data)
     data = jQuery.toJSON(data) unless @options.saveStyle == 'form'
@@ -202,13 +207,14 @@ class @Mercury.PageEditor
     jQuery.ajax url, {
       headers: Mercury.ajaxHeaders()
       type: method || 'POST'
-      dataType: @options.saveDataType || 'json'
+      dataType: @options.saveDataType,
       data: {content: data, _method: method}
       success: =>
         Mercury.changes = false
         Mercury.trigger('saved')
         callback() if typeof(callback) == 'function'
-      error: =>
+      error: (response) =>
+        Mercury.trigger('save_failed', response)
         Mercury.notify('Mercury was unable to save to the url: %s', url)
     }
 
